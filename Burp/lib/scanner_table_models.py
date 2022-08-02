@@ -8,7 +8,7 @@ class ScannerTableModels:
         self.scanner_table_models = {}
 
     def create_scanner_table_model(self, issue_name, issue_param):
-        key = issue_name + "." + issue_param
+        key = f"{issue_name}.{issue_param}"
         is_model_exists = key in self.scanner_table_models
 
         if is_model_exists:
@@ -24,7 +24,7 @@ class ScannerTableModels:
         self.scanner_table_models[key] = scanner_table_model
 
     def set_scanner_table_model(self, scanner_issue, issue_name, issue_param, vuln_param):
-        key = issue_name + "." + vuln_param
+        key = f"{issue_name}.{vuln_param}"
         scanner_issue_id = str(scanner_issue.getRequestResponse()).split("@")[1]
         scanner_table_model = self.scanner_table_models[key]
 
@@ -45,7 +45,7 @@ class ScannerTableModels:
         #Thread.sleep(500)
 
     def get_scanner_table_model(self, issue_name, issue_param):
-        key = issue_name + "." + issue_param
+        key = f"{issue_name}.{issue_param}"
 
         return self.scanner_table_models[key]
 

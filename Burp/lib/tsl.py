@@ -39,7 +39,7 @@ class TSL(TreeSelectionListener):
 
         if node:
             if is_param:
-                key = issue_name + "." + issue_param
+                key = f"{issue_name}.{issue_param}"
                 scanner_pane = self.scanner_panes[key]
 
                 self.view.set_scanner_pane(scanner_pane, issue_name, issue_param)
@@ -47,8 +47,8 @@ class TSL(TreeSelectionListener):
             elif is_settings:
                 pane.setRightComponent(self.settings)
             else:
-                print("No description for " + issue_name + " " + issue_param)
+                print(f"No description for {issue_name} {issue_param}")
         else:
-            print("Cannot set a pane for " + issue_name + " " + issue_param)
+            print(f"Cannot set a pane for {issue_name} {issue_param}")
 
 

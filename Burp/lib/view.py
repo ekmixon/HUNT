@@ -78,11 +78,7 @@ class View:
         self.is_scanner_panes.append(scanner_pane)
 
     def get_is_scanner_pane(self, scanner_pane):
-        for pane in self.get_is_scanner_panes():
-            if pane == scanner_pane:
-                return True
-
-        return False
+        return any(pane == scanner_pane for pane in self.get_is_scanner_panes())
 
     def get_is_scanner_panes(self):
         return self.is_scanner_panes
@@ -127,7 +123,7 @@ class View:
         for issue in self.issues:
             issue_name = issue["name"]
             issue_param = issue["param"]
-            key = issue_name + "." + issue_param
+            key = f"{issue_name}.{issue_param}"
 
             top_pane = self.create_request_list_pane(issue_name)
             bottom_pane = self.create_tabbed_pane()
@@ -139,9 +135,7 @@ class View:
         return self.scanner_panes
 
     def create_request_list_pane(self, issue_name):
-        request_list_pane = JScrollPane()
-
-        return request_list_pane
+        return JScrollPane()
 
     # Creates a JTabbedPane for each vulnerability per functionality
     def create_tabbed_pane(self):
@@ -212,7 +206,7 @@ class View:
         return self.pane
 
     def set_scanner_pane(self, scanner_pane, issue_name, issue_param):
-        key = issue_name + "." + issue_param
+        key = f"{issue_name}.{issue_param}"
         request_table_pane = scanner_pane.getTopComponent()
 
         if key in self.scanner_tables:
@@ -282,18 +276,14 @@ class View:
         controller = MessageController(request_response)
         message_editor = self.callbacks.createMessageEditor(controller, True)
         message_editor.setMessage(request_response.getRequest(), True)
-        component = message_editor.getComponent()
-
-        return component
+        return message_editor.getComponent()
 
     def set_response_tab_pane(self, scanner_issue):
         request_response = scanner_issue.getRequestResponse()
         controller = MessageController(request_response)
         message_editor = self.callbacks.createMessageEditor(controller, True)
         message_editor.setMessage(request_response.getResponse(), False)
-        component = message_editor.getComponent()
-
-        return component
+        return message_editor.getComponent()
 
     def traverse_tree(self, tree, model, issue_name, issue_param, issue_count, total_count):
         root = model.getRoot()
@@ -305,9 +295,7 @@ class View:
             traverse["node"] = node
             tree_issue_name = node.toString()
 
-            is_issue_name = re.search(issue_name, tree_issue_name)
-
-            if is_issue_name:
+            if is_issue_name := re.search(issue_name, tree_issue_name):
                 child_count = node.getChildCount()
 
                 for j in range(child_count):
@@ -315,13 +303,11 @@ class View:
                     traverse["child"] = child
                     tree_param_name = child.toString()
 
-                    is_param_name = re.search(issue_param, tree_param_name)
-
-                    if is_param_name:
-                        traverse["param_text"] = issue_param + " (" + str(issue_count) + ")"
+                    if is_param_name := re.search(issue_param, tree_param_name):
+                        traverse["param_text"] = f"{issue_param} ({str(issue_count)})"
                         break
 
-                traverse["issue_text"] = issue_name + " (" + str(total_count) + ")"
+                traverse["issue_text"] = f"{issue_name} ({str(total_count)})"
                 break
 
         return traverse

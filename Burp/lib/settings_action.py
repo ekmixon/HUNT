@@ -47,7 +47,7 @@ class SettingsAction(ActionListener):
         except Exception as e:
             print(e)
 
-        is_empty_scanner_panes = self.scanner_panes == None
+        is_empty_scanner_panes = self.scanner_panes is None
 
         if is_empty_scanner_panes:
             print("No scanner panes to load data into")
@@ -58,21 +58,23 @@ class SettingsAction(ActionListener):
             is_scanner_pane = key in self.scanner_panes
 
             if is_scanner_pane:
-                is_table = self.scanner_panes[key].getTopComponent().getViewport().getView()
-
-                if is_table:
+                if (
+                    is_table := self.scanner_panes[key]
+                    .getTopComponent()
+                    .getViewport()
+                    .getView()
+                ):
                     print(key)
-            else:
-                continue
 
     def save_data(self, save_file):
-        data = {}
-        data["hunt_issues"] = []
-
+        data = {"hunt_issues": []}
         for key in self.scanner_panes:
-            is_jtable = self.scanner_panes[key].getTopComponent().getViewport().getView()
-
-            if is_jtable:
+            if (
+                is_jtable := self.scanner_panes[key]
+                .getTopComponent()
+                .getViewport()
+                .getView()
+            ):
                 rows = self.scanner_panes[key].getTopComponent().getViewport().getView().getModel().getRowCount()
 
                 for row in range(rows):

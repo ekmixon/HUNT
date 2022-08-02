@@ -66,10 +66,7 @@ class BurpExtender(IBurpExtender, IExtensionStateListener, IContextMenuFactory, 
 
             hunt_methodology_menu.add(menu_test)
 
-        burp_menu = []
-        burp_menu.append(hunt_methodology_menu)
-
-        return burp_menu
+        return [hunt_methodology_menu]
 
     def getTabCaption(self):
         return self.EXTENSION_NAME
