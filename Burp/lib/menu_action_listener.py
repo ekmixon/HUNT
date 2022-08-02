@@ -16,7 +16,7 @@ class MenuActionListener(ActionListener):
         self.request_response = request_response
         self.tree = view.get_tree()
         self.pane = view.get_pane()
-        self.key = functionality_name + "." + vuln_name
+        self.key = f"{functionality_name}.{vuln_name}"
         self.tabbed_panes = view.get_tabbed_panes()
 
     def actionPerformed(self, e):

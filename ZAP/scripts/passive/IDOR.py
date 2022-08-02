@@ -7,33 +7,31 @@ def scan(ps, msg, src):
     # Test the request and/or response here
     if ScriptVars.getGlobalVar("hunt_pidor") is None:
         ScriptVars.setGlobalVar("hunt_pidor","init")
-    
-    if (msg and msg.getHistoryRef().getHistoryType()<=2):
-        # Change to a test which detects the vulnerability
-        # raiseAlert(risk, int reliability, String name, String description, String uri,
-        # String param, String attack, String otherInfo, String solution, String evidence,
-        # int cweId, int wascId, HttpMessage msg)
-        # risk: 0: info, 1: low, 2: medium, 3: high
-        # reliability: 0: falsePositive, 1: suspicious, 2: warning
 
-        words = ['id','user','account','number','order','no','doc','key','email','group','profile','edit','report']
-        result = []
+    if (msg and msg.getHistoryRef().getHistoryType()<=2):
         uri = msg.getRequestHeader().getURI().toString()
         params = msg.getParamNames()
         params = [element.lower() for element in params]
- 
-        base_uri = re.search('https?:\/\/([^/]+)(\/[^?#=]*)',uri)
 
-        if base_uri:
+        if base_uri := re.search('https?:\/\/([^/]+)(\/[^?#=]*)', uri):
             base_uri = str( base_uri.group() )
             regex = base_uri + str(params)
             globalvar = ScriptVars.getGlobalVar("hunt_pidor")
 
             if regex not in globalvar:
-                ScriptVars.setGlobalVar("hunt_pidor","" + globalvar + ' , ' + regex)
+                ScriptVars.setGlobalVar("hunt_pidor", f"{globalvar} , {regex}")
 
+                # Change to a test which detects the vulnerability
+                # raiseAlert(risk, int reliability, String name, String description, String uri,
+                # String param, String attack, String otherInfo, String solution, String evidence,
+                # int cweId, int wascId, HttpMessage msg)
+                # risk: 0: info, 1: low, 2: medium, 3: high
+                # reliability: 0: falsePositive, 1: suspicious, 2: warning
+
+                words = ['id','user','account','number','order','no','doc','key','email','group','profile','edit','report']
+                result = []
                 for x in words:
-                    y = re.compile(".*"+x)
+                    y = re.compile(f".*{x}")
                     if len(filter(y.match, params))>0:
                         result.append(x)
 

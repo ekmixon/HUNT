@@ -9,30 +9,28 @@ def scan(ps, msg, src):
         ScriptVars.setGlobalVar("hunt_psql","init")
 
     if (msg and msg.getHistoryRef().getHistoryType()<=2):
-        # Change to a test which detects the vulnerability
-        # raiseAlert(risk, int reliability, String name, String description, String uri,
-        # String param, String attack, String otherInfo, String solution, String evidence,
-        # int cweId, int wascId, HttpMessage msg)
-        # risk: 0: info, 1: low, 2: medium, 3: high
-        # reliability: 0: falsePositive, 1: suspicious, 2: warning
-
-        words = ['id','select','report','role','update','query','user','name','sort','where','search','params','process','row','view','table','from','sel','results','sleep','fetch','order','keyword','column','field','delete','string','number','filter']
-        result = []
         uri = msg.getRequestHeader().getURI().toString()
         params = msg.getParamNames()
         params = [element.lower() for element in params]
 
-        base_uri = re.search('https?:\/\/([^/]+)(\/[^?#=]*)',uri)
-
-        if base_uri:
+        if base_uri := re.search('https?:\/\/([^/]+)(\/[^?#=]*)', uri):
             base_uri = str( base_uri.group() )
             regex = base_uri + str(params)
             globalvar = ScriptVars.getGlobalVar("hunt_psql")
             if regex not in globalvar:
-                ScriptVars.setGlobalVar("hunt_psql","" + globalvar + ' , ' + regex)
+                ScriptVars.setGlobalVar("hunt_psql", f"{globalvar} , {regex}")
 
+                # Change to a test which detects the vulnerability
+                # raiseAlert(risk, int reliability, String name, String description, String uri,
+                # String param, String attack, String otherInfo, String solution, String evidence,
+                # int cweId, int wascId, HttpMessage msg)
+                # risk: 0: info, 1: low, 2: medium, 3: high
+                # reliability: 0: falsePositive, 1: suspicious, 2: warning
+
+                words = ['id','select','report','role','update','query','user','name','sort','where','search','params','process','row','view','table','from','sel','results','sleep','fetch','order','keyword','column','field','delete','string','number','filter']
+                result = []
                 for x in words:
-                    y = re.compile(".*"+x)
+                    y = re.compile(f".*{x}")
                     if len(filter(y.match, params))>0:
                         result.append(x)
 

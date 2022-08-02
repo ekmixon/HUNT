@@ -61,18 +61,12 @@ class View:
         functionality = self.checklist["Functionality"]
 
         # Sorts the functionality by name and by test name
-        functionality_list = []
-        for functionality_name in functionality:
-            functionality_list.append(functionality_name)
-
+        functionality_list = list(functionality)
         for functionality_name in sorted(functionality_list):
             tests = functionality[functionality_name]["tests"]
             node = DefaultMutableTreeNode(functionality_name)
 
-            tests_list = []
-            for test_name in tests:
-                tests_list.append(test_name)
-
+            tests_list = list(tests)
             for test_name in sorted(tests_list):
                 node.add(DefaultMutableTreeNode(test_name))
 
@@ -119,7 +113,7 @@ class View:
             tests = functionality[functionality_name]["tests"]
 
             for test_name in tests:
-                key = functionality_name + "." + test_name
+                key = f"{functionality_name}.{test_name}"
                 tabbed_pane = self.set_tabbed_pane(functionality_name, test_name)
                 self.tabbed_panes[key] = self.tabbed_pane
 
@@ -145,16 +139,12 @@ class View:
         description_textarea = JTextArea()
         description_textarea.setLineWrap(True)
         description_textarea.setText(description_text)
-        description_panel = JScrollPane(description_textarea)
-
-        return description_panel
+        return JScrollPane(description_textarea)
 
     # TODO: Add functionality to remove tabs
     # Creates the bugs panel
     def set_bugs_tab(self):
-        bugs_tab = JTabbedPane()
-
-        return bugs_tab
+        return JTabbedPane()
 
     # Creates the resources panel
     def set_resource_tab(self, fn, vn):
@@ -168,14 +158,10 @@ class View:
         resource_textarea.setLineWrap(True)
         resource_textarea.setWrapStyleWord(True)
         resource_textarea.setText(resource_text)
-        resources_panel = JScrollPane(resource_textarea)
-
-        return resources_panel
+        return JScrollPane(resource_textarea)
 
     def set_notes_tab(self):
-        notes_textarea = JTextArea()
-
-        return notes_textarea
+        return JTextArea()
 
     def set_tsl(self):
         self.tsl = TSL(self)
@@ -226,17 +212,13 @@ class View:
         controller = MessageController(request_response)
         message_editor = self.callbacks.createMessageEditor(controller, True)
         message_editor.setMessage(request_response.getRequest(), True)
-        component = message_editor.getComponent()
-
-        return component
+        return message_editor.getComponent()
 
     def set_response_tab_pane(self, request_response):
         controller = MessageController(request_response)
         message_editor = self.callbacks.createMessageEditor(controller, True)
         message_editor.setMessage(request_response.getResponse(), False)
-        component = message_editor.getComponent()
-
-        return component
+        return message_editor.getComponent()
 
     def set_bugs_tabbed_pane(self, request_tab, response_tab):
         bugs_tabbed_pane = JTabbedPane()

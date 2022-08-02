@@ -73,11 +73,10 @@ class Issues:
         for issue in self.issues:
             vuln_name = issue["name"]
             vuln_param = issue["param"]
-            is_vuln_found = re.search(vuln_param, parameter_decoded, re.IGNORECASE)
-
-            if is_vuln_found:
+            if is_vuln_found := re.search(
+                vuln_param, parameter_decoded, re.IGNORECASE
+            ):
                 self.vuln_param_add(vuln_params, vuln_name, vuln_param, parameter_decoded, parameter)
-                #self.vuln_param_found(vuln_params, vuln_name, vuln_param, parameter_decoded, parameter)
             else:
                 continue
 
@@ -91,7 +90,8 @@ class Issues:
 
     def vuln_param_lookup(self, vuln_params, vuln_name, vuln_param, parameter_decoded, parameter):
         # Put try catch
-        url = "http://api.pearson.com/v2/dictionaries/ldoce5/entries?headword=" + parameter_decoded
+        url = f"http://api.pearson.com/v2/dictionaries/ldoce5/entries?headword={parameter_decoded}"
+
         response = urllib2.urlopen(url)
 
         # Wait a second for response to come back
@@ -119,6 +119,8 @@ class Issues:
         issues = self.issues
         json = self.json
 
+        severity = "Medium"
+
         # Takes into account if there is more than one vulnerable parameter
         for vuln_parameter in vuln_parameters:
             issue_name = vuln_parameter["vuln_name"]
@@ -130,13 +132,11 @@ class Issues:
             url = urlparse.urlsplit(str(url))
             hostname = url.hostname
             path = url.path
-            url = url.scheme + "://" + url.hostname + url.path
+            url = f"{url.scheme}://{url.hostname}{url.path}"
 
             http_service = request_response.getHttpService()
             http_messages = [callbacks.applyMarkers(request_response, None, None)]
             detail = json["issues"][issue_name]["detail"]
-            severity = "Medium"
-
             scanner_issue = ScannerIssue(url, issue_name, param_name, vuln_param, param_value, hostname, path, http_service, http_messages, detail, severity, request_response)
             is_scanner_issue_dupe = self.check_duplicate_issue(scanner_issue)
 
@@ -182,7 +182,7 @@ class Issues:
                 else:
                     self.total_count[issue_name] = 1
 
-                key = issue_name + "." + issue_param
+                key = f"{issue_name}.{issue_param}"
                 is_issue_key_exists = key in self.issues_count
 
                 if is_issue_key_exists:
@@ -193,11 +193,11 @@ class Issues:
                 return issue["count"]
 
     def get_issues_count(self, issue_name, issue_param):
-        key = issue_name + "." + issue_param
+        key = f"{issue_name}.{issue_param}"
         return self.issues_count[key]
 
     def change_issues_count(self, issue_name, issue_param, is_checked):
-        key = issue_name + "." + issue_param
+        key = f"{issue_name}.{issue_param}"
 
         if is_checked:
             self.issues_count[key] -= 1

@@ -28,14 +28,14 @@ class TSL(TreeSelectionListener):
 
         if node:
             if is_functionality:
-                key = functionality_name + "." + test_name
+                key = f"{functionality_name}.{test_name}"
                 tabbed_pane = self.tabbed_panes[key]
                 pane.setRightComponent(tabbed_pane)
             elif is_settings:
                 pane.setRightComponent(self.settings)
             else:
-                print("No description for " + test_name)
+                print(f"No description for {test_name}")
         else:
-            print("Cannot set a pane for " + test_name)
+            print(f"Cannot set a pane for {test_name}")
 
 
